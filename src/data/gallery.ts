@@ -1,15 +1,15 @@
 export const artworks = [
   {
     id: 1,
-    title: "Celestial Serpent",
-    year: "2024",
+    title: "Red Lily of the Pond",
+    year: "2026",
     medium: "Digital Illustration",
     category: "Finished Works",
     collection: "Celestial Archive",
-    description: "A serpentine form coiled among constellation maps, rendered in fine ink-like linework.",
-    dimensions: "3000 × 3000 px",
-    placeholder: "linear-gradient(135deg, #0a0f2e 0%, #1a2a4a 50%, #0d1a30 100%)",
-    accent: "#2B9BFF",
+    description: "When love turns into betrayal, only red lilies await.",
+    dimensions: "600 × 750 px",
+    placeholder: "url('/src/assets/Red-Lily-of-the-Pond.png')",
+    accent: "#911212",
     number: "001",
   },
   {
