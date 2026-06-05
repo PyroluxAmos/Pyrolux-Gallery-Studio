@@ -8,7 +8,7 @@ export const artworks = [
     collection: "Celestial Archive",
     description: "When love turns into betrayal, only red lilies await.",
     dimensions: "600 × 750 px",
-    placeholder: "url('/src/assets/Red-Lily-of-the-Pond.png')",
+    placeholder: "url('/src/assets/red_lily_of_the_pond.png')",
     accent: "#911212",
     number: "001",
   },
