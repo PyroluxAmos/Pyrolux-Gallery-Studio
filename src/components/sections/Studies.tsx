@@ -165,27 +165,22 @@ function ZoomableImage({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
+        className="relative w-full h-full overflow-hidden flex items-center justify-center"
         style={{
-          flex: 1,
-          overflow: "hidden",
-          position: "relative",
           cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in",
           background: "#050816",
           userSelect: "none",
           WebkitUserSelect: "none",
           touchAction: "none",
-          minHeight: 340,
-          height: "100%",
         }}
       >
         <img
           src={src}
           alt={alt}
           draggable={false}
+          className="w-full h-full"
           style={{
             display: "block",
-            width: "100%",
-            height: "100%",
             objectFit: "contain",
             objectPosition: "center",
             transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
@@ -194,12 +189,12 @@ function ZoomableImage({
             pointerEvents: "none",
           }}
         />
-                {/* Top-right controls */}
+        
+        {/* Top-right controls */}
         <div
           className="absolute top-3 right-3 z-20 flex items-center gap-2"
           style={{ pointerEvents: "auto" }}
-        >
-          <button
+        >          <button
             type="button"
             style={btnStyle(canZoomOut)}
             disabled={!canZoomOut}
@@ -243,12 +238,12 @@ function ZoomableImage({
         {zoom !== 1 && (
           <div
             style={{
-              position: "absolute",              bottom: 12,
+              position: "absolute",
+              bottom: 12,
               left: 12,
               background: "rgba(5,8,22,0.75)",
               border: `1px solid ${gold}44`,
-              color: gold,
-              fontFamily: "Cinzel, serif",
+              color: gold,              fontFamily: "Cinzel, serif",
               fontSize: "0.65rem",
               letterSpacing: "0.1em",
               padding: "3px 8px",
@@ -292,12 +287,12 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
         {/* Header */}
         <div className="text-center mb-12">
           <div
-            className="font-['Cinzel'] text-[10px] tracking-[0.5em] uppercase mb-4 opacity-50"            style={{ color: gold }}
+            className="font-['Cinzel'] text-[10px] tracking-[0.5em] uppercase mb-4 opacity-50"
+            style={{ color: gold }}
           >
             Catalogue Raisonné
           </div>
-          <h2 className="font-['Cinzel_Decorative'] text-4xl md:text-5xl mb-6" style={{ color: text }}>
-            Art <span className="text-shimmer">Studies</span>
+          <h2 className="font-['Cinzel_Decorative'] text-4xl md:text-5xl mb-6" style={{ color: text }}>            Art <span className="text-shimmer">Studies</span>
           </h2>
           <div className="flex justify-center mb-6">
             <FleurDivider width={240} color={gold} />
@@ -341,12 +336,12 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                 onClick={() => openModal(art)}
               >
                 {/* Catalogue number */}
-                <div                  className="absolute top-3 left-3 z-10 font-['Cinzel'] text-xs"
+                <div
+                  className="absolute top-3 left-3 z-10 font-['Cinzel'] text-xs"
                   style={{ color: gold, opacity: 0.7 }}
                 >
                   No. {art.number}
                 </div>
-
                 {/* Multi-part badge */}
                 {hasMultiple && (
                   <div
@@ -390,12 +385,12 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                   <CelestialFrame width={240} height={320} color={gold} />
 
                   {/* Hover overlay */}
-                  <div                    className="absolute inset-0 flex items-end p-4 opacity-0 transition-opacity duration-300"
+                  <div
+                    className="absolute inset-0 flex items-end p-4 opacity-0 transition-opacity duration-300"
                     style={{ background: "rgba(5,8,22,0.85)" }}
                     onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
                     onMouseLeave={(e) => (e.currentTarget.style.opacity = "0")}
-                  >
-                    <div>
+                  >                    <div>
                       <div className="font-['Cinzel'] text-xs tracking-widest mb-1" style={{ color: gold }}>
                         QUICK VIEW
                       </div>
@@ -439,12 +434,12 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
         {/* Placeholder note */}
         <div className="text-center mt-10">
           <p className="font-['Cormorant_Garamond'] text-sm italic" style={{ color: muted }}>
-            Artworks shown with placeholder compositions. Actual works to be uploaded.          </p>
+            Artworks shown with placeholder compositions. Actual works to be uploaded.
+          </p>
         </div>
       </div>
 
-      {/* Detail modal */}
-      {modalArt && (
+      {/* Detail modal */}      {modalArt && (
         <div className="modal-overlay" onClick={() => setModalArt(null)}>
           <div
             className="relative w-full mx-4 overflow-y-auto md:overflow-hidden rounded-lg"
@@ -458,13 +453,15 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex flex-col md:flex-row w-full">
+            {/* FIX: md:items-start prevents the left panel from stretching to match the right panel's height */}
+            <div className="flex flex-col md:flex-row md:items-start w-full">
+              
               {/* Left: zoomable image viewer */}
-              {/* FIX: w-full min-h-[40vh] on mobile prevents overlap, overflow-hidden prevents bleeding */}
-              <div className="relative w-full md:w-1/2 flex-shrink-0 flex flex-col md:sticky md:top-0 min-h-[40vh] md:h-full overflow-hidden">
+              {/* FIX: md:h-fit ensures it only takes the space it needs, eliminating the huge bottom gap */}
+              <div className="relative w-full md:w-1/2 flex-shrink-0 flex flex-col md:sticky md:top-4 md:h-fit overflow-hidden">
                 
-                {/* Main Image Area */}
-                <div className="flex-1 relative min-h-[250px]">
+                {/* Main Image Area: bounded by max-h to prevent excessive stretching */}
+                <div className="relative w-full flex items-center justify-center min-h-[300px] max-h-[60vh] md:max-h-[75vh]">
                   {isImageUrl(modalArt.images[modalImageIndex]) ? (
                     <ZoomableImage
                       src={getSrc(modalArt.images[modalImageIndex])}
@@ -474,7 +471,7 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                   ) : (
                     <div
                       className="w-full h-full flex items-center justify-center"
-                      style={{ background: modalArt.images[modalImageIndex], minHeight: 300 }}
+                      style={{ background: modalArt.images[modalImageIndex] }}
                     >
                       <div className="opacity-20 text-8xl" style={{ color: modalArt.accent }}>
                         ✦
@@ -485,13 +482,13 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                   {/* Corner ornament */}
                   <div className="absolute top-0 left-0 pointer-events-none">
                     <CornerOrnament size={40} color={gold} />
-                  </div>
+                  </div6>
                 </div>
 
-                {/* Bottom Controls: Normal flow (NO absolute positioning to prevent overlap) */}                {modalArt.images.length > 1 && (
+                {/* Bottom Controls: Normal flow (NO absolute positioning to prevent overlap) */}
+                {modalArt.images.length > 1 && (
                   <div className="flex flex-col flex-shrink-0" style={{ borderTop: `1px solid ${gold}33` }}>
-                    {/* Part label safely sits above thumbnails */}
-                    <div
+                    {/* Part label safely sits above thumbnails */}                    <div
                       className="text-center font-['Cinzel'] text-[9px] tracking-widest py-2"
                       style={{ color: gold, opacity: 0.7 }}
                     >
@@ -537,10 +534,10 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                               {idx + 1}
                             </div>
                           )}
-                        </button>                      ))}
+                        </button>
+                      ))}
                     </div>
-                  </div>
-                )}
+                  </div>                )}
               </div>
 
               {/* Right: info panel */}
@@ -586,10 +583,10 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                       >
                         {modalArt.categories.length > 1 ? "CATEGORIES" : "CATEGORY"}
                       </div>
-                      <div className="flex flex-wrap gap-1">                        {modalArt.categories.map((cat) => (
+                      <div className="flex flex-wrap gap-1">
+                        {modalArt.categories.map((cat) => (
                           <span
-                            key={cat}
-                            className="font-['Cinzel'] text-[9px] tracking-widest uppercase px-2 py-1"
+                            key={cat}                            className="font-['Cinzel'] text-[9px] tracking-widest uppercase px-2 py-1"
                             style={{ border: `1px solid ${gold}44`, color: gold }}
                           >
                             {cat}
@@ -635,10 +632,10 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                     </div>
                   </div>
                 </div>
+
                 <button
                   className="btn-celestial mt-8 w-full md:w-auto"
-                  style={{ borderColor: gold, color: gold }}
-                  onClick={() => setModalArt(null)}
+                  style={{ borderColor: gold, color: gold }}                  onClick={() => setModalArt(null)}
                 >
                   ← Return to Gallery
                 </button>
