@@ -222,4 +222,4 @@ export default function Hero({ lightMode }: HeroProps) {
       </div>
     </section>
   );
-}
+          }
