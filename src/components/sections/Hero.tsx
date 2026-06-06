@@ -221,5 +221,5 @@ export default function Hero({ lightMode }: HeroProps) {
         </div>
       </div>
     </section>
-  );
-          }
+  )
+}
