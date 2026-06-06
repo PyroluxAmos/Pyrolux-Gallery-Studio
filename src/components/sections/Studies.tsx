@@ -1,231 +1,56 @@
-import { useState } from 'react'
-import { artworks, type ArtworkEntry } from '@/data/gallery'
-import { CelestialFrame, FleurDivider } from '@/components/ui-custom/Ornaments'
+import { useState } from "react";
+import { artworks } from "@/data/gallery";
+import { CelestialFrame, FleurDivider, CornerOrnament } from "@/components/ui-custom/Ornaments";
 
-type Category = 'All' | 'Finished Works' | 'Studies' | 'Experiments' | 'Personal Projects'
+const categories = ["All", "Finished Works", "Studies", "Experiments", "Personal Projects"];
 
-const CATEGORIES: Category[] = ['All', 'Finished Works', 'Studies', 'Experiments', 'Personal Projects']
+export default function Studies({ lightMode }: { lightMode: boolean }) {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [modalArt, setModalArt] = useState<typeof artworks[0] | null>(null);
 
-// ─── Star fallback for placeholder gradients ──────────────────────────────────
-function StarFallback() {
-  return (
-    <svg
-      className="absolute inset-0 w-full h-full opacity-30"
-      viewBox="0 0 200 200"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {[
-        [40, 60], [80, 30], [120, 80], [160, 40], [60, 130],
-        [100, 110], [150, 150], [30, 170], [170, 170], [100, 160],
-      ].map(([cx, cy], i) => (
-        <circle key={i} cx={cx} cy={cy} r={1.5} fill="#C8A84B" opacity={0.6 + (i % 3) * 0.15} />
-      ))}
-      <circle cx="100" cy="100" r="3" fill="#E6C878" opacity={0.9} />
-    </svg>
-  )
-}
+  const gold = lightMode ? "#A07820" : "#C8A84B";
+  const text = lightMode ? "#0D1F3C" : "#F0F4FF";
+  const muted = lightMode ? "#2A5FA8" : "#8a9ab0";
+  const bg = lightMode ? "rgba(238,232,220,0.7)" : "rgba(8,18,36,0.8)";
+  const sectionBg = lightMode
+    ? "linear-gradient(180deg, #DCE8F5 0%, #EEF3FA 100%)"
+    : "linear-gradient(180deg, #081224 0%, #0E1D3A 100%)";
 
-// ─── Artwork Card ─────────────────────────────────────────────────────────────
-interface ArtworkCardProps {
-  entry: ArtworkEntry
-  onClick: () => void
-}
-
-function ArtworkCard({ entry, onClick }: ArtworkCardProps) {
-  const hasRealImage = !!entry.image
-
-  return (
-    <div
-      className="artwork-card relative cursor-pointer rounded overflow-hidden group"
-      style={{ aspectRatio: '3/4' }}
-      onClick={onClick}
-    >
-      {/* Image or gradient background */}
-      {hasRealImage ? (
-        <img
-          src={entry.image}
-          alt={entry.title}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      ) : (
-        <div
-          className="absolute inset-0 w-full h-full transition-transform duration-500 group-hover:scale-105"
-          style={{ background: entry.placeholder }}
-        >
-          <StarFallback />
-        </div>
-      )}
-
-      {/* Celestial SVG frame overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <CelestialFrame />
-      </div>
-
-      {/* Hover overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300 flex items-center justify-center">
-        <span
-          className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm tracking-[0.2em] uppercase"
-          style={{ fontFamily: 'Cinzel, serif', color: '#E6C878' }}
-        >
-          Quick View
-        </span>
-      </div>
-
-      {/* Entry number badge */}
-      <div
-        className="absolute top-3 left-3 text-xs opacity-60"
-        style={{ fontFamily: 'Cinzel, serif', color: '#C8A84B' }}
-      >
-        {entry.id}
-      </div>
-    </div>
-  )
-}
-
-// ─── Detail Modal ─────────────────────────────────────────────────────────────
-interface DetailModalProps {
-  entry: ArtworkEntry
-  onClose: () => void
-}
-
-function DetailModal({ entry, onClose }: DetailModalProps) {
-  const hasRealImage = !!entry.image
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(5,8,22,0.92)', backdropFilter: 'blur(8px)' }}
-      onClick={onClose}
-    >
-      <div
-        className="relative max-w-4xl w-full rounded-lg overflow-hidden flex flex-col md:flex-row"
-        style={{ background: '#081224', border: '1px solid rgba(200,168,75,0.3)', maxHeight: '90vh' }}
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Close button */}
-        <button
-          className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full transition-colors"
-          style={{ background: 'rgba(200,168,75,0.15)', color: '#C8A84B' }}
-          onClick={onClose}
-          aria-label="Close"
-        >
-          ✕
-        </button>
-
-        {/* Artwork display — left panel */}
-        <div
-          className="relative flex-shrink-0 w-full md:w-1/2"
-          style={{ aspectRatio: '3/4', minHeight: '280px' }}
-        >
-          {hasRealImage ? (
-            <img
-              src={entry.image}
-              alt={entry.title}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          ) : (
-            <div
-              className="absolute inset-0 w-full h-full"
-              style={{ background: entry.placeholder }}
-            >
-              <StarFallback />
-            </div>
-          )}
-        </div>
-
-        {/* Metadata — right panel */}
-        <div className="flex flex-col justify-center p-8 overflow-y-auto" style={{ color: '#C8D8E8' }}>
-          <p
-            className="text-xs mb-2 tracking-[0.2em]"
-            style={{ fontFamily: 'Cinzel, serif', color: '#C8A84B' }}
-          >
-            {entry.collection} — {entry.id}
-          </p>
-
-          <h2
-            className="text-2xl mb-1"
-            style={{ fontFamily: 'Cinzel Decorative, serif', color: '#F0F4FF', fontWeight: 900 }}
-          >
-            {entry.title}
-          </h2>
-
-          <p
-            className="text-sm mb-6 italic"
-            style={{ fontFamily: 'Cormorant Garamond, serif', color: '#C8A84B' }}
-          >
-            {entry.year}
-          </p>
-
-          <div className="space-y-3 text-sm mb-6" style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1rem' }}>
-            <div className="catalogue-entry pl-3">
-              <span style={{ color: '#C8A84B' }}>Medium</span>
-              <br />
-              {entry.medium}
-            </div>
-            <div className="catalogue-entry pl-3">
-              <span style={{ color: '#C8A84B' }}>Dimensions</span>
-              <br />
-              {entry.dimensions}
-            </div>
-            <div className="catalogue-entry pl-3">
-              <span style={{ color: '#C8A84B' }}>Category</span>
-              <br />
-              {entry.category}
-            </div>
-          </div>
-
-          <p style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '1rem', lineHeight: 1.7, color: '#C8D8E8' }}>
-            {entry.description}
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// ─── Studies Section ──────────────────────────────────────────────────────────
-export default function Studies() {
-  const [activeCategory, setActiveCategory] = useState<Category>('All')
-  const [selectedEntry, setSelectedEntry] = useState<ArtworkEntry | null>(null)
-
-  const filtered = activeCategory === 'All'
+  const filtered = activeCategory === "All"
     ? artworks
-    : artworks.filter(a => a.category === activeCategory)
+    : artworks.filter((a) => a.category === activeCategory);
 
   return (
-    <section id="studies" className="py-24 px-6" style={{ background: 'var(--bg-mid, #081224)' }}>
+    <section id="studies" className="relative py-24 px-6" style={{ background: sectionBg }}>
       <div className="max-w-6xl mx-auto">
-
-        {/* Section header */}
+        {/* Header */}
         <div className="text-center mb-12">
-          <p
-            className="text-xs tracking-[0.3em] uppercase mb-3"
-            style={{ fontFamily: 'Cinzel, serif', color: '#C8A84B' }}
-          >
-            Catalogue
-          </p>
-          <h2
-            className="text-4xl md:text-5xl mb-4"
-            style={{ fontFamily: 'Cinzel Decorative, serif', fontWeight: 900, color: '#F0F4FF' }}
-          >
-            Art Studies
+          <div className="font-['Cinzel'] text-[10px] tracking-[0.5em] uppercase mb-4 opacity-50" style={{ color: gold }}>
+            Catalogue Raisonné
+          </div>
+          <h2 className="font-['Cinzel_Decorative'] text-4xl md:text-5xl mb-6" style={{ color: text }}>
+            Art <span className="text-shimmer">Studies</span>
           </h2>
-          <FleurDivider />
+          <div className="flex justify-center mb-6">
+            <FleurDivider width={240} color={gold} />
+          </div>
+          <p className="font-['Cormorant_Garamond'] text-lg italic max-w-lg mx-auto" style={{ color: muted }}>
+            A documented record of works — experiments, studies, and completed illustrations.
+          </p>
         </div>
 
-        {/* Category filter tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {CATEGORIES.map(cat => (
+        {/* Category filter */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className="px-4 py-2 text-xs tracking-widest uppercase transition-all duration-200"
+              className="font-['Cinzel'] text-[10px] tracking-widest uppercase px-4 py-2 transition-all duration-300"
               style={{
-                fontFamily: 'Cinzel, serif',
-                border: `1px solid ${activeCategory === cat ? '#C8A84B' : 'rgba(200,168,75,0.25)'}`,
-                color: activeCategory === cat ? '#C8A84B' : '#C8D8E8',
-                background: activeCategory === cat ? 'rgba(200,168,75,0.1)' : 'transparent',
-                borderRadius: '2px',
+                background: activeCategory === cat ? `${gold}22` : "transparent",
+                border: `1px solid ${activeCategory === cat ? gold : `${gold}44`}`,
+                color: activeCategory === cat ? gold : muted,
+                cursor: "pointer",
               }}
             >
               {cat}
@@ -233,18 +58,199 @@ export default function Studies() {
           ))}
         </div>
 
-        {/* 3-column artwork grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map(entry => (
-            <ArtworkCard key={entry.id} entry={entry} onClick={() => setSelectedEntry(entry)} />
+        {/* Catalogue grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filtered.map((art, i) => (
+            <div
+              key={art.id}
+              className="artwork-card relative"
+              style={{ animation: `fadeInUp 0.6s ease ${i * 0.1}s both` }}
+              onClick={() => setModalArt(art)}
+            >
+              {/* Catalogue number */}
+              <div
+                className="absolute top-3 left-3 z-10 font-['Cinzel'] text-xs"
+                style={{ color: gold, opacity: 0.7 }}
+              >
+                No. {art.number}
+              </div>
+
+              {/* Artwork image / placeholder */}
+              <div
+                className="relative overflow-hidden"
+                style={{
+                  aspectRatio: "3/4",
+                  background: art.image ? "#050816" : (art.placeholder ?? "#050816"),
+                }}
+              >
+                {/* Real image — imported asset */}
+                {art.image && (
+                  <img
+                    src={art.image}
+                    alt={art.title}
+                    className="absolute inset-0 w-full h-full"
+                    style={{ objectFit: "cover", objectPosition: "top center" }}
+                  />
+                )}
+
+                <CelestialFrame width={240} height={320} color={gold} />
+
+                {/* Fallback star — gradient placeholders only */}
+                {!art.image && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center opacity-30"
+                    style={{ fontSize: 60, color: art.accent }}
+                  >
+                    ✦
+                  </div>
+                )}
+
+                {/* Hover overlay */}
+                <div
+                  className="absolute inset-0 flex items-end p-4 opacity-0 transition-opacity duration-300"
+                  style={{ background: "rgba(5,8,22,0.85)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "0")}
+                >
+                  <div>
+                    <div className="font-['Cinzel'] text-xs tracking-widest mb-1" style={{ color: gold }}>
+                      QUICK VIEW
+                    </div>
+                    <div className="font-['Cormorant_Garamond'] text-sm italic" style={{ color: "#C8D8E8" }}>
+                      {art.medium}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Metadata */}
+              <div
+                className="p-4"
+                style={{ background: bg, borderTop: `1px solid ${gold}33` }}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-['Cinzel'] text-sm tracking-wide" style={{ color: text }}>
+                    {art.title}
+                  </h3>
+                  <span className="font-['Cormorant_Garamond'] text-sm italic" style={{ color: muted }}>
+                    {art.year}
+                  </span>
+                </div>
+                <div className="font-['Cormorant_Garamond'] text-sm italic mb-2" style={{ color: muted }}>
+                  {art.medium}
+                </div>
+                <div
+                  className="inline-block font-['Cinzel'] text-[9px] tracking-widest uppercase px-2 py-1"
+                  style={{ border: `1px solid ${gold}44`, color: gold, opacity: 0.7 }}
+                >
+                  {art.category}
+                </div>
+              </div>
+            </div>
           ))}
+        </div>
+
+        {/* Placeholder note */}
+        <div className="text-center mt-10">
+          <p className="font-['Cormorant_Garamond'] text-sm italic" style={{ color: muted }}>
+            Artworks shown with placeholder compositions. Actual works to be uploaded.
+          </p>
         </div>
       </div>
 
       {/* Detail modal */}
-      {selectedEntry && (
-        <DetailModal entry={selectedEntry} onClose={() => setSelectedEntry(null)} />
+      {modalArt && (
+        <div className="modal-overlay" onClick={() => setModalArt(null)}>
+          <div
+            className="relative max-w-3xl w-full mx-4 overflow-hidden"
+            style={{
+              background: lightMode ? "#EEF3FA" : "#081224",
+              border: `1px solid ${gold}44`,
+              maxHeight: "90vh",
+              overflowY: "auto",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col md:flex-row">
+              {/* Art panel */}
+              <div
+                className="relative md:w-1/2 flex-shrink-0"
+                style={{
+                  aspectRatio: "3/4",
+                  background: modalArt.image ? "#050816" : (modalArt.placeholder ?? "#050816"),
+                  minHeight: 300,
+                }}
+              >
+                {modalArt.image && (
+                  <img
+                    src={modalArt.image}
+                    alt={modalArt.title}
+                    className="absolute inset-0 w-full h-full"
+                    style={{ objectFit: "cover", objectPosition: "top center" }}
+                  />
+                )}
+                {!modalArt.image && (
+                  <div className="absolute inset-0 flex items-center justify-center opacity-20" style={{ fontSize: 80, color: modalArt.accent }}>✦</div>
+                )}
+                <div style={{ position: "absolute", top: 0, left: 0 }}>
+                  <CornerOrnament size={40} color={gold} />
+                </div>
+              </div>
+
+              {/* Info panel */}
+              <div className="p-8 flex flex-col justify-between">
+                <div>
+                  <div className="font-['Cinzel'] text-[10px] tracking-[0.5em] mb-3 opacity-50" style={{ color: gold }}>
+                    CATALOGUE No. {modalArt.number}
+                  </div>
+                  <h2 className="font-['Cinzel_Decorative'] text-2xl mb-2" style={{ color: lightMode ? "#0D1F3C" : "#F0F4FF" }}>
+                    {modalArt.title}
+                  </h2>
+                  <div className="font-['Cormorant_Garamond'] text-base italic mb-6" style={{ color: muted }}>
+                    {modalArt.year} · {modalArt.medium}
+                  </div>
+
+                  <FleurDivider width={200} color={gold} />
+
+                  <div className="mt-6 space-y-4">
+                    {[
+                      ["Dimensions", modalArt.dimensions],
+                      ["Category", modalArt.category],
+                      ["Collection", modalArt.collection],
+                    ].map(([label, value]) => (
+                      <div key={label} className="catalogue-entry">
+                        <div className="font-['Cinzel'] text-[9px] tracking-widest opacity-50 mb-1" style={{ color: gold }}>
+                          {label}
+                        </div>
+                        <div className="font-['Cormorant_Garamond'] text-base" style={{ color: lightMode ? "#0D1F3C" : "#C8D8E8" }}>
+                          {value}
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="catalogue-entry">
+                      <div className="font-['Cinzel'] text-[9px] tracking-widest opacity-50 mb-2" style={{ color: gold }}>
+                        DESCRIPTION
+                      </div>
+                      <p className="font-['Cormorant_Garamond'] text-base italic leading-relaxed" style={{ color: lightMode ? "#1A3A6A" : "#8a9ab0" }}>
+                        {modalArt.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  className="btn-celestial mt-8"
+                  style={{ borderColor: gold, color: gold }}
+                  onClick={() => setModalArt(null)}
+                >
+                  ← Return to Gallery
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </section>
-  )
-        }
+  );
+}
