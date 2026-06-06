@@ -93,7 +93,8 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                   />
                 )}
 
-                <CelestialFrame width={240} height={320} color={gold} />
+                {/* CelestialFrame — stretches to fill card via width/height 100% in SVG */}
+                <CelestialFrame color={gold} />
 
                 {/* Fallback star — gradient placeholders only */}
                 {!art.image && (
@@ -253,4 +254,4 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
       )}
     </section>
   );
-                  }
+}
