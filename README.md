@@ -1,6 +1,6 @@
 # Pyrolux Gallery
 
-**Where Fire Meets The Stars** — A premium celestial Art Nouveau artist portfolio.
+**Where Fire Meets The Stars** — A premium celestial Art Nouveau artist portfolio..
 
 ## Stack
 
