@@ -36,8 +36,8 @@ export const artworks = [
     title: "Sta. Elena High School S.Y 25-26 Year Book",
     year: "2026",
     medium: "Digital Illustration, Ibis Paint X",
-    categories: ["Finished Works, Commissions"],
-    collections: ["Finished Artworks, Commissions, Top Commissions"],
+    categories: ["Finished Works", "Commissions"],
+    collections: ["Finished Artworks", "Commissions", "Top Commissions"],
     description: "Cover of the Year Book of Sta. Elena High School School Year 2025-2026, aka my batch. ^^",
     dimensions: "2650 × 3950 px",
     images: [
