@@ -3,7 +3,7 @@ import { artworks } from "@/data/gallery";
 import { CelestialFrame, FleurDivider, CornerOrnament } from "@/components/ui-custom/Ornaments";
 
 // ── Edit this list to add / remove / rename category filter tabs ──────────────
-const categories = ["All", "Finished Works", "Studies", "Experiments", "Personal Projects"];
+const categories = ["All", "Finished Works", "Studies", "Comissions", "Work in Progress"];
 
 // ── Helper: is this string a real image url(...) or a gradient? ───────────────
 const isImageUrl = (s: string) => s.startsWith("url(");
