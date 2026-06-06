@@ -1,5 +1,8 @@
 import redLily from "../assets/red_lily_of_the_pond.png";
 import magicalFlare from "../assets/MagicalFlashFlare.png";
+import FrontFinal from "../assets/FrontFinal.png";
+import BackFinal from "../assets/BackFinal.png";
+import LayoutFinal from "../assets/LayoutFinal.jpg";
 
 export const artworks = [
   {
@@ -30,14 +33,18 @@ export const artworks = [
   },
   {
     id: 3,
-    title: "Moon Phase Study III",
-    year: "2024",
-    medium: "Fine Line Art",
-    categories: ["Studies"],
-    collections: ["Artwork Study"],
-    description: "Technical study of lunar cycles rendered as geometric manuscript illustrations.",
-    dimensions: "2000 × 2000 px",
-    images: ["linear-gradient(135deg, #0e1828 0%, #1e3048 50%, #0a1020 100%)"],
+    title: "Sta. Elena High School S.Y 25-26 Year Book",
+    year: "2026",
+    medium: "Digital Illustration, Ibis Paint X",
+    categories: ["Finished Works, Commisions"],
+    collections: ["Finished Artworks, Commissions, Top Commissions"],
+    description: "Cover of the Year Book of Sta. Elena High School School Year 2025-2026, aka my batch. ^^",
+    dimensions: "2650 × 3950 px",
+    images: [
+      `url('${FrontFinal}')`, 
+      `url('${BackFinal}')`, 
+      `url('${LayoutFinal}')`
+    ],
     accent: "#C8D8E8",
     number: "003",
   },
