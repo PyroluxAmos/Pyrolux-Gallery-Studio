@@ -3,6 +3,11 @@ import magicalFlare from "../assets/MagicalFlashFlare.png";
 import FrontFinal from "../assets/FrontFinal.png";
 import BackFinal from "../assets/BackFinal.png";
 import LayoutFinal from "../assets/LayoutFinal.jpg";
+import DarkNun from "../assets/DarkNun.jpg";
+import graphite from "../assets/graphite.jpg";
+import SwimmingBluza from "../assets/Swimming_bluza.jpg";
+import SwimmingCommission from "../assets/Swimming-commission.jpg";
+import SwimmingCommission1 from "../assets/Swimming-commission1.jpg";
 
 export const artworks = [
   {
@@ -50,40 +55,40 @@ export const artworks = [
   },
   {
     id: 4,
-    title: "Prometheus Unbound",
-    year: "2023",
-    medium: "Digital Illustration",
-    categories: ["Finished Works"],
-    collections: ["Finished Artworks"],
-    description: "Classical mythological figure reimagined through an Art Nouveau lens with celestial fire motifs.",
-    dimensions: "3500 × 4500 px",
-    images: ["linear-gradient(135deg, #200a08 0%, #3a1510 50%, #180805 100%)"],
+    title: "Fallen",
+    year: "2026",
+    medium: "Traditional Illustration, pen drawing",
+    categories: ["Finished Works", "Studies"],
+    collections: ["Finished Artworks", "Practice Studies"],
+    description: "What does it feel like when the people you've thought holy was the one bringing your demise? Only God is faithful.",
+    dimensions: "3917 × 5963 px",
+    images: [`url('${DarkNun}')`],
     accent: "#E65C00",
     number: "004",
   },
   {
     id: 5,
-    title: "Nebula Portrait",
-    year: "2024",
-    medium: "Digital Painting",
-    categories: ["Experiments"],
-    collections: ["Finished Artworks"],
-    description: "A portrait where skin dissolves into interstellar gas clouds — identity as cosmic phenomenon.",
+    title: "Reference Study",
+    year: "2026",
+    medium: "Graphite Drawing",
+    categories: ["Finished Works", "Studies"],
+    collections: ["Finished Artworks", "Practice Studies"],
+    description: "A portrait I saw from the pinterest. I wanted to study how to shade values properly even with a single shade.",
     dimensions: "2800 × 3600 px",
-    images: ["linear-gradient(135deg, #0a0a2e 0%, #1a0a3a 30%, #2a1040 60%, #0a1020 100%)"],
+    images: [`url('${graphite}')`],
     accent: "#7B2FBE",
     number: "005",
   },
   {
     id: 6,
-    title: "Geometric Sanctum",
-    year: "2023",
-    medium: "Fine Line Art",
-    categories: ["Studies"],
-    collections: ["Artwork Study"],
-    description: "Sacred geometry patterns derived from Platonic solids, rendered with compass and ink precision.",
-    dimensions: "3000 × 3000 px",
-    images: ["linear-gradient(135deg, #081828 0%, #102040 50%, #060e18 100%)"],
+    title: "Aquatics Performance Task",
+    year: "2026",
+    medium: "Watercolor Paper, Traditional Illustration",
+    categories: ["Finished Works", "Studies"],
+    collections: ["Finished Artworks", "Artwork Studies"],
+    description: "Part of my Performance Task for my aquatics subject on Grade 12.",
+    dimensions: "A4 Paper",
+    images: [`url('${SwimmingBluza}')`],
     accent: "#2B9BFF",
     number: "006",
   },
