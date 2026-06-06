@@ -179,5 +179,4 @@ export default function About({ lightMode }: { lightMode: boolean }) {
       </div>
     </section>
   );
-          }
-          
+}
