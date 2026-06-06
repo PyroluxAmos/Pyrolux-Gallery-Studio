@@ -40,10 +40,12 @@ export const FleurDivider = ({ width = 300, color = "#C8A84B" }: { width?: numbe
   </svg>
 );
 
-export const CelestialFrame = ({ width = 300, height = 400, color = "#C8A84B" }: { width?: number | string; height?: number | string; color?: string }) => (
+export const CelestialFrame = ({ width = 300, height = 400, color = "#C8A84B" }: { width?: number; height?: number; color?: string }) => (
   <svg
-    width={width} height={height}
+    width="100%"
+    height="100%"
     viewBox={`0 0 ${width} ${height}`}
+    preserveAspectRatio="none"
     style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
   >
     <g stroke={color} strokeWidth="0.6" fill="none" opacity="0.6">
