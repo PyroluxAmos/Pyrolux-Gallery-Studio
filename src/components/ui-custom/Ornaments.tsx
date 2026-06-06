@@ -124,4 +124,3 @@ export const MoonPhase = ({ phase = 0, size = 30, color = "#C8A84B" }: { phase?:
     </span>
   );
 };
-    
