@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { artworks } from "@/data/gallery";
 import { CelestialFrame, FleurDivider, CornerOrnament } from "@/components/ui-custom/Ornaments";
 
@@ -11,10 +11,258 @@ const getSrc = (s: string) => s.slice(5, -2).replace(/'/g, "");
 
 type Artwork = typeof artworks[0];
 
+// ── Zoom/pan image viewer ─────────────────────────────────────────────────────
+function ZoomableImage({
+  src,
+  alt,
+  gold,
+}: {
+  src: string;
+  alt: string;
+  gold: string;
+}) {
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = useRef<{ x: number; y: number; panX: number; panY: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Reset on src change
+  useEffect(() => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  }, [src]);
+
+  // Clamp pan so the image can't drift too far off screen
+  const clampPan = useCallback(
+    (x: number, y: number, z: number) => {
+      if (!containerRef.current) return { x, y };
+      const maxOffset = ((z - 1) / 2) * containerRef.current.clientWidth;
+      return {
+        x: Math.max(-maxOffset, Math.min(maxOffset, x)),
+        y: Math.max(-maxOffset * 1.3, Math.min(maxOffset * 1.3, y)),
+      };
+    },
+    []
+  );
+
+  // Mouse wheel — zoom toward cursor
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      e.preventDefault();
+      const delta = -e.deltaY * 0.001;
+      setZoom((z) => {
+        const next = Math.min(4, Math.max(1, z + delta * z));
+        // If zooming back to 1, reset pan
+        if (next <= 1) setPan({ x: 0, y: 0 });
+        return next;
+      });
+    },
+    []
+  );
+
+  // Drag to pan
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (zoom <= 1) return;
+    e.preventDefault();
+    setIsDragging(true);
+    dragStart.current = { x: e.clientX, y: e.clientY, panX: pan.x, panY: pan.y };
+  }, [zoom, pan]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDragging || !dragStart.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    const clamped = clampPan(dragStart.current.panX + dx, dragStart.current.panY + dy, zoom);
+    setPan(clamped);
+  }, [isDragging, zoom, clampPan]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+    dragStart.current = null;
+  }, []);
+
+  // Touch pinch-zoom
+  const lastTouch = useRef<{ dist: number; midX: number; midY: number } | null>(null);
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastTouch.current = {
+        dist: Math.hypot(dx, dy),
+        midX: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        midY: (e.touches[0].clientY + e.touches[1].clientY) / 2,
+      };
+    } else if (e.touches.length === 1 && zoom > 1) {
+      dragStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, panX: pan.x, panY: pan.y };
+    }
+  }, [zoom, pan]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+    if (e.touches.length === 2 && lastTouch.current) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const scale = dist / lastTouch.current.dist;
+      setZoom((z) => {
+        const next = Math.min(4, Math.max(1, z * scale));
+        if (next <= 1) setPan({ x: 0, y: 0 });
+        return next;
+      });
+      lastTouch.current.dist = dist;
+    } else if (e.touches.length === 1 && dragStart.current && zoom > 1) {
+      const dx = e.touches[0].clientX - dragStart.current.x;
+      const dy = e.touches[0].clientY - dragStart.current.y;
+      const clamped = clampPan(dragStart.current.panX + dx, dragStart.current.panY + dy, zoom);
+      setPan(clamped);
+    }
+  }, [zoom, clampPan]);
+
+  const handleTouchEnd = useCallback(() => {
+    lastTouch.current = null;
+    dragStart.current = null;
+  }, []);
+
+  const zoomStep = 0.5;
+  const canZoomIn  = zoom < 4;
+  const canZoomOut = zoom > 1;
+
+  const btnStyle = (active: boolean): React.CSSProperties => ({
+    background: active ? `${gold}22` : "rgba(5,8,22,0.6)",
+    border: `1px solid ${active ? gold : `${gold}44`}`,
+    color: active ? gold : `${gold}88`,
+    cursor: active ? "pointer" : "not-allowed",
+    fontFamily: "Cinzel, serif",
+    fontSize: "0.75rem",
+    letterSpacing: "0.05em",
+    padding: "4px 10px",
+    transition: "all 0.2s",
+  });
+
+  return (
+    <div className="flex flex-col w-full h-full">
+      {/* ── Viewer ── */}
+      <div
+        ref={containerRef}
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          flex: 1,
+          overflow: "hidden",
+          position: "relative",
+          cursor: zoom > 1 ? (isDragging ? "grabbing" : "grab") : "zoom-in",
+          background: "#050816",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          // Prevent page scroll while pinching
+          touchAction: "none",
+        }}
+      >
+        <img
+          src={src}
+          alt={alt}
+          draggable={false}
+          style={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+            // ✅ KEY FIX: contain shows the whole image, no cropping
+            objectFit: "contain",
+            objectPosition: "center",
+            transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${pan.y / zoom}px)`,
+            transformOrigin: "center center",
+            transition: isDragging ? "none" : "transform 0.12s ease",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Zoom level badge */}
+        {zoom !== 1 && (
+          <div
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              background: "rgba(5,8,22,0.75)",
+              border: `1px solid ${gold}44`,
+              color: gold,
+              fontFamily: "Cinzel, serif",
+              fontSize: "0.65rem",
+              letterSpacing: "0.1em",
+              padding: "2px 7px",
+              backdropFilter: "blur(6px)",
+            }}
+          >
+            {Math.round(zoom * 100)}%
+          </div>
+        )}
+      </div>
+
+      {/* ── Zoom controls ── */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+          padding: "8px 12px",
+          background: "rgba(5,8,22,0.85)",
+          borderTop: `1px solid ${gold}22`,
+        }}
+      >
+        <button style={btnStyle(canZoomOut)} disabled={!canZoomOut}
+          onClick={() => {
+            setZoom((z) => {
+              const next = Math.max(1, z - zoomStep);
+              if (next <= 1) setPan({ x: 0, y: 0 });
+              return next;
+            });
+          }}
+        >
+          − Zoom Out
+        </button>
+
+        <button style={btnStyle(zoom !== 1)}
+          onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
+        >
+          Reset
+        </button>
+
+        <button style={btnStyle(canZoomIn)} disabled={!canZoomIn}
+          onClick={() => setZoom((z) => Math.min(4, z + zoomStep))}
+        >
+          Zoom In +
+        </button>
+
+        <div
+          style={{
+            marginLeft: 6,
+            color: `${gold}55`,
+            fontFamily: "Cormorant Garamond, serif",
+            fontSize: "0.7rem",
+            fontStyle: "italic",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Scroll or pinch to zoom · Drag to pan
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function Studies({ lightMode }: { lightMode: boolean }) {
   const [activeCategory, setActiveCategory] = useState("All");
   const [modalArt, setModalArt] = useState<Artwork | null>(null);
-  // which image part is shown in the modal (index into art.images)
   const [modalImageIndex, setModalImageIndex] = useState(0);
 
   const gold  = lightMode ? "#A07820" : "#C8A84B";
@@ -25,7 +273,6 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
     ? "linear-gradient(180deg, #DCE8F5 0%, #EEF3FA 100%)"
     : "linear-gradient(180deg, #081224 0%, #0E1D3A 100%)";
 
-  // artwork matches if ANY of its categories includes the active filter
   const filtered = activeCategory === "All"
     ? artworks
     : artworks.filter((a) => a.categories.includes(activeCategory));
@@ -89,10 +336,7 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                 onClick={() => openModal(art)}
               >
                 {/* Catalogue number */}
-                <div
-                  className="absolute top-3 left-3 z-10 font-['Cinzel'] text-xs"
-                  style={{ color: gold, opacity: 0.7 }}
-                >
+                <div className="absolute top-3 left-3 z-10 font-['Cinzel'] text-xs" style={{ color: gold, opacity: 0.7 }}>
                   No. {art.number}
                 </div>
 
@@ -106,33 +350,31 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                   </div>
                 )}
 
-                {/* Cover image */}
+                {/* Cover image — object-contain so full image is always visible */}
                 <div
                   className="relative overflow-hidden"
                   style={{
                     aspectRatio: "3/4",
-                    background: hasImage ? "#050816" : cover,
+                    background: "#050816",
                   }}
                 >
-                  {hasImage && (
+                  {hasImage ? (
                     <img
                       src={getSrc(cover)}
                       alt={art.title}
                       className="absolute inset-0 w-full h-full"
-                      style={{ objectFit: "cover", objectPosition: "top center" }}
+                      style={{ objectFit: "contain", objectPosition: "center" }}
                     />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0" style={{ background: cover }} />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-30" style={{ fontSize: 60, color: art.accent }}>
+                        ✦
+                      </div>
+                    </>
                   )}
 
                   <CelestialFrame width={240} height={320} color={gold} />
-
-                  {!hasImage && (
-                    <div
-                      className="absolute inset-0 flex items-center justify-center opacity-30"
-                      style={{ fontSize: 60, color: art.accent }}
-                    >
-                      ✦
-                    </div>
-                  )}
 
                   {/* Hover overlay */}
                   <div
@@ -165,7 +407,6 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                   <div className="font-['Cormorant_Garamond'] text-sm italic mb-2" style={{ color: muted }}>
                     {art.medium}
                   </div>
-                  {/* All category tags */}
                   <div className="flex flex-wrap gap-1">
                     {art.categories.map((cat) => (
                       <div
@@ -195,62 +436,67 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
       {modalArt && (
         <div className="modal-overlay" onClick={() => setModalArt(null)}>
           <div
-            className="relative max-w-3xl w-full mx-4 overflow-hidden"
+            className="relative w-full mx-4 overflow-hidden"
             style={{
+              maxWidth: 900,
               background: lightMode ? "#EEF3FA" : "#081224",
               border: `1px solid ${gold}44`,
-              maxHeight: "90vh",
-              overflowY: "auto",
+              maxHeight: "92vh",
+              display: "flex",
+              flexDirection: "column",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col md:flex-row" style={{ flex: 1, minHeight: 0 }}>
 
-              {/* ── Left: image viewer ──────────────────────────────────────── */}
-              <div className="relative md:w-1/2 flex-shrink-0 flex flex-col">
-
-                {/* Main image display */}
-                <div
-                  className="relative flex-1"
-                  style={{
-                    aspectRatio: "3/4",
-                    minHeight: 300,
-                    background: isImageUrl(modalArt.images[modalImageIndex])
-                      ? "#050816"
-                      : modalArt.images[modalImageIndex],
-                  }}
-                >
-                  {isImageUrl(modalArt.images[modalImageIndex]) && (
-                    <img
-                      src={getSrc(modalArt.images[modalImageIndex])}
-                      alt={`${modalArt.title} — Part ${modalImageIndex + 1}`}
-                      className="absolute inset-0 w-full h-full"
-                      style={{ objectFit: "cover", objectPosition: "top center" }}
-                    />
-                  )}
-                  {!isImageUrl(modalArt.images[modalImageIndex]) && (
-                    <div className="absolute inset-0 flex items-center justify-center opacity-20" style={{ fontSize: 80, color: modalArt.accent }}>✦</div>
-                  )}
-                  <div style={{ position: "absolute", top: 0, left: 0 }}>
-                    <CornerOrnament size={40} color={gold} />
+              {/* ── Left: zoomable image viewer ─────────────────────────────── */}
+              <div
+                className="relative md:w-1/2 flex-shrink-0 flex flex-col"
+                style={{
+                  minHeight: 340,
+                  // On mobile the image panel takes natural height; on desktop it fills the modal
+                  height: "clamp(340px, 55vw, 600px)",
+                }}
+              >
+                {isImageUrl(modalArt.images[modalImageIndex]) ? (
+                  <ZoomableImage
+                    src={getSrc(modalArt.images[modalImageIndex])}
+                    alt={`${modalArt.title} — Part ${modalImageIndex + 1}`}
+                    gold={gold}
+                  />
+                ) : (
+                  /* Gradient placeholder fallback */
+                  <div
+                    className="flex-1 flex items-center justify-center"
+                    style={{ background: modalArt.images[modalImageIndex] }}
+                  >
+                    <div className="opacity-20 text-8xl" style={{ color: modalArt.accent }}>✦</div>
                   </div>
+                )}
 
-                  {/* Part label when multi-image */}
-                  {modalArt.images.length > 1 && (
-                    <div
-                      className="absolute bottom-3 left-0 right-0 text-center font-['Cinzel'] text-[9px] tracking-widest"
-                      style={{ color: gold, opacity: 0.7 }}
-                    >
-                      PART {modalImageIndex + 1} OF {modalArt.images.length}
-                    </div>
-                  )}
+                {/* Corner ornament */}
+                <div style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
+                  <CornerOrnament size={40} color={gold} />
                 </div>
 
-                {/* Part thumbnail strip — only shown for multi-image artworks */}
+                {/* Part label */}
+                {modalArt.images.length > 1 && (
+                  <div
+                    className="absolute bottom-14 left-0 right-0 text-center font-['Cinzel'] text-[9px] tracking-widest pointer-events-none"
+                    style={{ color: gold, opacity: 0.7 }}
+                  >
+                    PART {modalImageIndex + 1} OF {modalArt.images.length}
+                  </div>
+                )}
+
+                {/* Thumbnail strip */}
                 {modalArt.images.length > 1 && (
                   <div
                     className="flex gap-2 p-3 overflow-x-auto"
-                    style={{ background: lightMode ? "rgba(200,168,75,0.08)" : "rgba(5,8,22,0.8)", borderTop: `1px solid ${gold}33` }}
+                    style={{
+                      background: lightMode ? "rgba(200,168,75,0.08)" : "rgba(5,8,22,0.8)",
+                      borderTop: `1px solid ${gold}33`,
+                    }}
                   >
                     {modalArt.images.map((img, idx) => (
                       <button
@@ -271,7 +517,7 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                             src={getSrc(img)}
                             alt={`Part ${idx + 1}`}
                             className="absolute inset-0 w-full h-full"
-                            style={{ objectFit: "cover" }}
+                            style={{ objectFit: "contain" }}
                           />
                         )}
                         {!isImageUrl(img) && (
@@ -281,90 +527,4 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                         )}
                       </button>
                     ))}
-                  </div>
-                )}
-              </div>
-
-              {/* ── Right: info panel ───────────────────────────────────────── */}
-              <div className="p-8 flex flex-col justify-between">
-                <div>
-                  <div className="font-['Cinzel'] text-[10px] tracking-[0.5em] mb-3 opacity-50" style={{ color: gold }}>
-                    CATALOGUE No. {modalArt.number}
-                  </div>
-                  <h2 className="font-['Cinzel_Decorative'] text-2xl mb-2" style={{ color: lightMode ? "#0D1F3C" : "#F0F4FF" }}>
-                    {modalArt.title}
-                  </h2>
-                  <div className="font-['Cormorant_Garamond'] text-base italic mb-6" style={{ color: muted }}>
-                    {modalArt.year} · {modalArt.medium}
-                  </div>
-
-                  <FleurDivider width={200} color={gold} />
-
-                  <div className="mt-6 space-y-4">
-                    <div className="catalogue-entry">
-                      <div className="font-['Cinzel'] text-[9px] tracking-widest opacity-50 mb-1" style={{ color: gold }}>DIMENSIONS</div>
-                      <div className="font-['Cormorant_Garamond'] text-base" style={{ color: lightMode ? "#0D1F3C" : "#C8D8E8" }}>{modalArt.dimensions}</div>
-                    </div>
-
-                    {/* Multiple categories displayed as tags */}
-                    <div className="catalogue-entry">
-                      <div className="font-['Cinzel'] text-[9px] tracking-widest opacity-50 mb-2" style={{ color: gold }}>
-                        {modalArt.categories.length > 1 ? "CATEGORIES" : "CATEGORY"}
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {modalArt.categories.map((cat) => (
-                          <span
-                            key={cat}
-                            className="font-['Cinzel'] text-[9px] tracking-widest uppercase px-2 py-1"
-                            style={{ border: `1px solid ${gold}44`, color: gold }}
-                          >
-                            {cat}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Multiple collections displayed as tags */}
-                    <div className="catalogue-entry">
-                      <div className="font-['Cinzel'] text-[9px] tracking-widest opacity-50 mb-2" style={{ color: gold }}>
-                        {modalArt.collections.length > 1 ? "COLLECTIONS" : "COLLECTION"}
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {modalArt.collections.map((col) => (
-                          <span
-                            key={col}
-                            className="font-['Cormorant_Garamond'] text-base italic"
-                            style={{ color: lightMode ? "#0D1F3C" : "#C8D8E8" }}
-                          >
-                            {col}{modalArt.collections.indexOf(col) < modalArt.collections.length - 1 ? ", " : ""}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="catalogue-entry">
-                      <div className="font-['Cinzel'] text-[9px] tracking-widest opacity-50 mb-2" style={{ color: gold }}>DESCRIPTION</div>
-                      <p className="font-['Cormorant_Garamond'] text-base italic leading-relaxed" style={{ color: lightMode ? "#1A3A6A" : "#8a9ab0" }}>
-                        {modalArt.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  className="btn-celestial mt-8"
-                  style={{ borderColor: gold, color: gold }}
-                  onClick={() => setModalArt(null)}
-                >
-                  ← Return to Gallery
-                </button>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      )}
-    </section>
-  );
-          }
-                  
+                  </div
