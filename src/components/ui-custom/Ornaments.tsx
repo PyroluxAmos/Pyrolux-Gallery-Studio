@@ -40,7 +40,7 @@ export const FleurDivider = ({ width = 300, color = "#C8A84B" }: { width?: numbe
   </svg>
 );
 
-export const CelestialFrame = ({ width = 300, height = 400, color = "#C8A84B" }: { width?: number; height?: number; color?: string }) => (
+export const CelestialFrame = ({ width = 300, height = 400, color = "#C8A84B" }: { width?: number | string; height?: number | string; color?: string }) => (
   <svg
     width={width} height={height}
     viewBox={`0 0 ${width} ${height}`}
