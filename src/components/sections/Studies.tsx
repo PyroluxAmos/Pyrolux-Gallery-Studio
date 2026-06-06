@@ -458,13 +458,13 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col md:flex-row w-full">
               {/* Left: zoomable image viewer */}
-              {/* FIX: h-[60vh] prevents mobile overlap, md:sticky keeps desktop layout intact */}
-              <div className="relative md:w-1/2 flex-shrink-0 flex flex-col md:sticky md:top-0 h-[60vh] md:h-full">
+              {/* FIX: w-full min-h-[40vh] on mobile prevents overlap, overflow-hidden prevents bleeding */}
+              <div className="relative w-full md:w-1/2 flex-shrink-0 flex flex-col md:sticky md:top-0 min-h-[40vh] md:h-full overflow-hidden">
                 
                 {/* Main Image Area */}
-                <div className="flex-1 relative">
+                <div className="flex-1 relative min-h-[250px]">
                   {isImageUrl(modalArt.images[modalImageIndex]) ? (
                     <ZoomableImage
                       src={getSrc(modalArt.images[modalImageIndex])}
@@ -489,7 +489,7 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                 </div>
 
                 {/* Bottom Controls: Normal flow (NO absolute positioning to prevent overlap) */}                {modalArt.images.length > 1 && (
-                  <div className="flex flex-col flex-shrink-0">
+                  <div className="flex flex-col flex-shrink-0" style={{ borderTop: `1px solid ${gold}33` }}>
                     {/* Part label safely sits above thumbnails */}
                     <div
                       className="text-center font-['Cinzel'] text-[9px] tracking-widest py-2"
@@ -503,7 +503,6 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                       className="flex gap-3 p-4 overflow-x-auto snap-x snap-mandatory"
                       style={{
                         background: lightMode ? "rgba(200,168,75,0.08)" : "rgba(5,8,22,0.9)",
-                        borderTop: `1px solid ${gold}33`,
                         minHeight: 100,
                       }}
                     >
@@ -537,15 +536,15 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                             >
                               {idx + 1}
                             </div>
-                          )}                        </button>
-                      ))}
+                          )}
+                        </button>                      ))}
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Right: info panel */}
-              <div className="p-6 md:p-8 flex flex-col md:overflow-y-auto" style={{ flex: 1 }}>
+              <div className="w-full p-6 md:p-8 flex flex-col md:overflow-y-auto md:flex-1" style={{ flex: 1 }}>
                 <div>
                   <div
                     className="font-['Cinzel'] text-[10px] tracking-[0.5em] mb-3 opacity-50"
@@ -586,8 +585,8 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                         style={{ color: gold }}
                       >
                         {modalArt.categories.length > 1 ? "CATEGORIES" : "CATEGORY"}
-                      </div>                      <div className="flex flex-wrap gap-1">
-                        {modalArt.categories.map((cat) => (
+                      </div>
+                      <div className="flex flex-wrap gap-1">                        {modalArt.categories.map((cat) => (
                           <span
                             key={cat}
                             className="font-['Cinzel'] text-[9px] tracking-widest uppercase px-2 py-1"
