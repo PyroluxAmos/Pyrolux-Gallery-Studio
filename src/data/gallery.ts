@@ -24,7 +24,7 @@ export const artworks = [
     collections: ["Finished Artworks"],
     description: "A figure crackling with arcane energy — chromatic aberration, exploding star bursts, and magenta sparks rendered in an anime-inspired action composition.",
     dimensions: "3024 × 4032 px",
-    images: [`url(${magicalFlare})`],
+    images: [`url('${redLily}')`],
     accent: "#E040FB",
     number: "002",
   },
