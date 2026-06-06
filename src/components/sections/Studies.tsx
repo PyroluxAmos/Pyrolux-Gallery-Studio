@@ -75,23 +75,35 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                 No. {art.number}
               </div>
 
-              {/* Artwork placeholder */}
+              {/* Artwork image / placeholder */}
               <div
                 className="relative overflow-hidden"
                 style={{
                   aspectRatio: "3/4",
-                  background: art.placeholder,
+                  background: art.placeholder.startsWith("url(") ? "#050816" : art.placeholder,
                 }}
               >
+                {/* Real image — shown when placeholder is url(...) */}
+                {art.placeholder.startsWith("url(") && (
+                  <img
+                    src={art.placeholder.slice(5, -2).replace(/'/g, "")}
+                    alt={art.title}
+                    className="absolute inset-0 w-full h-full"
+                    style={{ objectFit: "cover", objectPosition: "top center" }}
+                  />
+                )}
+
                 <CelestialFrame width={240} height={320} color={gold} />
 
-                {/* Abstract art placeholder content */}
-                <div
-                  className="absolute inset-0 flex items-center justify-center opacity-30"
-                  style={{ fontSize: 60, color: art.accent }}
-                >
-                  ✦
-                </div>
+                {/* Fallback star — gradient placeholders only */}
+                {!art.placeholder.startsWith("url(") && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center opacity-30"
+                    style={{ fontSize: 60, color: art.accent }}
+                  >
+                    ✦
+                  </div>
+                )}
 
                 {/* Hover overlay */}
                 <div
@@ -165,11 +177,21 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                 className="relative md:w-1/2 flex-shrink-0"
                 style={{
                   aspectRatio: "3/4",
-                  background: modalArt.placeholder,
+                  background: modalArt.placeholder.startsWith("url(") ? "#050816" : modalArt.placeholder,
                   minHeight: 300,
                 }}
               >
-                <div className="absolute inset-0 flex items-center justify-center opacity-20" style={{ fontSize: 80, color: modalArt.accent }}>✦</div>
+                {modalArt.placeholder.startsWith("url(") && (
+                  <img
+                    src={modalArt.placeholder.slice(5, -2).replace(/'/g, "")}
+                    alt={modalArt.title}
+                    className="absolute inset-0 w-full h-full"
+                    style={{ objectFit: "cover", objectPosition: "top center" }}
+                  />
+                )}
+                {!modalArt.placeholder.startsWith("url(") && (
+                  <div className="absolute inset-0 flex items-center justify-center opacity-20" style={{ fontSize: 80, color: modalArt.accent }}>✦</div>
+                )}
                 <div style={{ position: "absolute", top: 0, left: 0 }}>
                   <CornerOrnament size={40} color={gold} />
                 </div>
@@ -231,4 +253,5 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
       )}
     </section>
   );
-}
+            }
+                        
