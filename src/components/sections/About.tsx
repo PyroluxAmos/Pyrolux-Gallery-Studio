@@ -151,7 +151,7 @@ export default function About({ lightMode }: { lightMode: boolean }) {
               For commissions, collaborations, and inquiries
             </p>
             <a
-              href="mailto:hello@pyroluxgallery.com"
+              href="mailto: phyrostyx@gmail.com"
               className="btn-celestial block text-center w-full"
               style={{
                 borderColor: gold,
@@ -162,7 +162,7 @@ export default function About({ lightMode }: { lightMode: boolean }) {
                 lineHeight: 1.5,
               }}
             >
-              ✦ hello@pyroluxgallery.com
+              ✦ phyrostyx@gmail.com
             </a>
           </div>
         </div>
