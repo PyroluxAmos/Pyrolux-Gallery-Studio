@@ -93,7 +93,7 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                   />
                 )}
 
-                <CelestialFrame width={240} height={320} color={gold} />
+                <CelestialFrame width="100%" height="100%" color={gold} />
 
                 {/* Fallback star — gradient placeholders only */}
                 {!art.image && (
