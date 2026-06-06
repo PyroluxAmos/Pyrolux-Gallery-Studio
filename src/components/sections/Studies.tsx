@@ -2,7 +2,7 @@ import { useState } from "react";
 import { artworks } from "@/data/gallery";
 import { CelestialFrame, FleurDivider, CornerOrnament } from "@/components/ui-custom/Ornaments";
 
-const categories = ["All", "Finished Works", "Studies", "Experiments", "Personal Projects"];
+const categories = ["All", "Finished Works", "Studies", "Commissions", "Work in Progress"];
 
 export default function Studies({ lightMode }: { lightMode: boolean }) {
   const [activeCategory, setActiveCategory] = useState("All");
