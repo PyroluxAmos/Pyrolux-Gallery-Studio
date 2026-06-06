@@ -90,9 +90,9 @@ export const artworks = [
 
 export const collections = [
   {
-    id: "celestial",
-    name: "Celestial Archive",
-    description: "Works exploring the cosmos, star maps, and interstellar phenomena.",
+    id: "Finished Artworks",
+    name: "Finished Artworks",
+    description: "Collections of every Artworks I have finished so far.",
     count: 12,
     icon: "✦",
     color: "#2B9BFF",
