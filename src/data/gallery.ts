@@ -1,195 +1,180 @@
-import redLily from '@/assets/red_lily_of_the_pond.png'
-import magicalFlare from '@/assets/MagicalFlashFlare.png'
+import redLily from "../assets/red_lily_of_the_pond.png";
+import magicalFlare from "../assets/MagicalFlashFlare.png";
 
-export interface ArtworkEntry {
-  id: string
-  title: string
-  year: string
-  medium: string
-  dimensions: string
-  category: 'Finished Works' | 'Studies' | 'Experiments' | 'Personal Projects'
-  collection: string
-  description: string
-  image?: string
-  placeholder?: string
-}
+export const artworks = [
+  {
+    id: 1,
+    title: "Red Lily of the Pond",
+    year: "2024",
+    medium: "Digital Painting",
+    category: "Finished Works",
+    collection: "Astral Portraits",
+    description: "A figure at rest among spider lilies — the higanbana blooming in crimson mist, symbols of parting and return rendered in deep, swirling reds.",
+    dimensions: "600 × 750 px",
+    image: redLily as string,
+    placeholder: null as string | null,
+    accent: "#C0392B",
+    number: "001",
+  },
+  {
+    id: 2,
+    title: "Magical Flash Flare",
+    year: "2024",
+    medium: "Digital Illustration",
+    category: "Finished Works",
+    collection: "Mythic Studies",
+    description: "A figure crackling with arcane energy — chromatic aberration, exploding star bursts, and magenta sparks rendered in an anime-inspired action composition.",
+    dimensions: "3024 × 4032 px",
+    image: magicalFlare as string,
+    placeholder: null as string | null,
+    accent: "#E040FB",
+    number: "002",
+  },
+  {
+    id: 3,
+    title: "Moon Phase Study III",
+    year: "2024",
+    medium: "Fine Line Art",
+    category: "Studies",
+    collection: "Sacred Geometry",
+    description: "Technical study of lunar cycles rendered as geometric manuscript illustrations.",
+    dimensions: "2000 × 2000 px",
+    image: null as string | null,
+    placeholder: "linear-gradient(135deg, #0e1828 0%, #1e3048 50%, #0a1020 100%)",
+    accent: "#C8D8E8",
+    number: "003",
+  },
+  {
+    id: 4,
+    title: "Prometheus Unbound",
+    year: "2023",
+    medium: "Digital Illustration",
+    category: "Finished Works",
+    collection: "Mythic Studies",
+    description: "Classical mythological figure reimagined through an Art Nouveau lens with celestial fire motifs.",
+    dimensions: "3500 × 4500 px",
+    image: null as string | null,
+    placeholder: "linear-gradient(135deg, #200a08 0%, #3a1510 50%, #180805 100%)",
+    accent: "#E65C00",
+    number: "004",
+  },
+  {
+    id: 5,
+    title: "Nebula Portrait",
+    year: "2024",
+    medium: "Digital Painting",
+    category: "Experiments",
+    collection: "Astral Portraits",
+    description: "A portrait where skin dissolves into interstellar gas clouds — identity as cosmic phenomenon.",
+    dimensions: "2800 × 3600 px",
+    image: null as string | null,
+    placeholder: "linear-gradient(135deg, #0a0a2e 0%, #1a0a3a 30%, #2a1040 60%, #0a1020 100%)",
+    accent: "#7B2FBE",
+    number: "005",
+  },
+  {
+    id: 6,
+    title: "Geometric Sanctum",
+    year: "2023",
+    medium: "Fine Line Art",
+    category: "Studies",
+    collection: "Sacred Geometry",
+    description: "Sacred geometry patterns derived from Platonic solids, rendered with compass and ink precision.",
+    dimensions: "3000 × 3000 px",
+    image: null as string | null,
+    placeholder: "linear-gradient(135deg, #081828 0%, #102040 50%, #060e18 100%)",
+    accent: "#2B9BFF",
+    number: "006",
+  },
+];
 
-export interface Collection {
-  id: string
-  name: string
-  description: string
-  artworkIds: string[]
-}
+export const collections = [
+  {
+    id: "celestial",
+    name: "Celestial Archive",
+    description: "Works exploring the cosmos, star maps, and interstellar phenomena.",
+    count: 12,
+    icon: "✦",
+    color: "#2B9BFF",
+  },
+  {
+    id: "sacred",
+    name: "Sacred Geometry",
+    description: "Mathematical beauty — Platonic forms, mandalas, and occult diagrams.",
+    count: 8,
+    icon: "◈",
+    color: "#C8D8E8",
+  },
+  {
+    id: "botanical",
+    name: "Botanical Linework",
+    description: "Flora reimagined as fine ink studies with ornamental embellishment.",
+    count: 15,
+    icon: "❧",
+    color: "#4CAF72",
+  },
+  {
+    id: "astral",
+    name: "Astral Portraits",
+    description: "Figures dissolving into starfields — identity, cosmos, and soul.",
+    count: 6,
+    icon: "◉",
+    color: "#C8A84B",
+  },
+  {
+    id: "mythic",
+    name: "Mythic Studies",
+    description: "Classical mythology reinterpreted through celestial Art Nouveau.",
+    count: 9,
+    icon: "⚜",
+    color: "#E65C00",
+  },
+];
 
-export interface ServicePanel {
-  id: string
-  icon: string
-  title: string
-  subtitle: string
-  description: string
-  turnaround: string
-  steps: string[]
-}
-
-// ─── Artworks ────────────────────────────────────────────────────────────────
-
-export const artworks: ArtworkEntry[] = [
+export const services = [
   {
-    id: '001',
-    title: 'Red Lily of the Pond',
-    year: '2024',
-    medium: 'Digital Painting',
-    dimensions: '3000 × 4000 px',
-    category: 'Finished Works',
-    collection: 'Astral Portraits',
-    description:
-      'A luminous study of a red lily suspended above still water, rendered with delicate botanical precision and celestial undertones.',
-    image: redLily,
+    id: 1,
+    title: "Sketch Studies",
+    subtitle: "Foundations of Form",
+    description: "Initial explorations — loose gesture drawings, compositional thumbnails, and character concept development.",
+    turnaround: "3–5 days",
+    process: ["Brief & reference gathering", "Rough sketch pass", "Refinement round", "Final delivery"],
+    icon: "✏",
   },
   {
-    id: '002',
-    title: 'Magical Flash Flare',
-    year: '2024',
-    medium: 'Digital Illustration',
-    dimensions: '3000 × 3000 px',
-    category: 'Finished Works',
-    collection: 'Mythic Studies',
-    description:
-      'An explosion of arcane light captured at the moment of casting — layered glows, prismatic halos, and molten sparks suspended in deep space.',
-    image: magicalFlare,
+    id: 2,
+    title: "Fine Line Art",
+    subtitle: "Precision Rendered",
+    description: "Intricate linework commissions — botanical illustrations, architectural detail studies, and ornamental designs.",
+    turnaround: "7–14 days",
+    process: ["Concept development", "Pencil underdrawing", "Ink rendering", "Digital refinement", "Final delivery"],
+    icon: "⟨⟩",
   },
   {
-    id: '003',
-    title: 'Celestial Drift No. I',
-    year: '2024',
-    medium: 'Digital Illustration',
-    dimensions: '4000 × 4000 px',
-    category: 'Studies',
-    collection: 'Celestial Archive',
-    description: 'Placeholder — artwork pending upload.',
-    placeholder: 'linear-gradient(135deg, #0a0f2e 0%, #1a2a4a 50%, #0e1d3a 100%)',
+    id: 3,
+    title: "Full Illustration",
+    subtitle: "Fully Realized Worlds",
+    description: "Complete digital paintings with full color, atmosphere, and detailed environment or portraiture work.",
+    turnaround: "14–21 days",
+    process: ["Brief & moodboard", "Sketch approval", "Color rough", "Painting pass", "Final refinement"],
+    icon: "◈",
   },
   {
-    id: '004',
-    title: 'Sacred Spiral',
-    year: '2024',
-    medium: 'Line Art',
-    dimensions: '3000 × 3000 px',
-    category: 'Studies',
-    collection: 'Sacred Geometry',
-    description: 'Placeholder — artwork pending upload.',
-    placeholder: 'linear-gradient(135deg, #0e1d3a 0%, #1e3a5f 50%, #0a0f2e 100%)',
+    id: 4,
+    title: "Commercial Projects",
+    subtitle: "Brand & Editorial",
+    description: "Editorial illustrations, cover art, book illustrations, and commercial campaigns requiring original artwork.",
+    turnaround: "Custom timeline",
+    process: ["Discovery call", "Contract & deposit", "Concept development", "Review rounds", "Final delivery & licensing"],
+    icon: "⬡",
   },
   {
-    id: '005',
-    title: 'Moonbloom',
-    year: '2024',
-    medium: 'Digital Painting',
-    dimensions: '2400 × 3200 px',
-    category: 'Personal Projects',
-    collection: 'Botanical Linework',
-    description: 'Placeholder — artwork pending upload.',
-    placeholder: 'linear-gradient(135deg, #050816 0%, #0e1d3a 50%, #1e3a5f 100%)',
+    id: 5,
+    title: "Branding & Direction",
+    subtitle: "Visual Identity",
+    description: "Complete visual identity systems — logos, brand marks, color palettes, and creative direction packages.",
+    turnaround: "21–30 days",
+    process: ["Brand discovery", "Mood & direction", "Concept exploration", "Refinement", "Brand guide delivery"],
+    icon: "✦",
   },
-  {
-    id: '006',
-    title: 'Astral Portrait — Study IV',
-    year: '2024',
-    medium: 'Digital Painting',
-    dimensions: '3000 × 4000 px',
-    category: 'Experiments',
-    collection: 'Astral Portraits',
-    description: 'Placeholder — artwork pending upload.',
-    placeholder: 'linear-gradient(135deg, #081224 0%, #0a0f2e 50%, #1a2a4a 100%)',
-  },
-]
-
-// ─── Collections ─────────────────────────────────────────────────────────────
-
-export const collections: Collection[] = [
-  {
-    id: 'celestial-archive',
-    name: 'Celestial Archive',
-    description: 'Star maps, nebulae, and astronomical studies rendered in ink and light.',
-    artworkIds: ['003'],
-  },
-  {
-    id: 'sacred-geometry',
-    name: 'Sacred Geometry',
-    description: 'Mandalas, spirals, and geometric constructions rooted in ancient symbolism.',
-    artworkIds: ['004'],
-  },
-  {
-    id: 'botanical-linework',
-    name: 'Botanical Linework',
-    description: 'Fine-line studies of flora — precise, living, and otherworldly.',
-    artworkIds: ['005'],
-  },
-  {
-    id: 'astral-portraits',
-    name: 'Astral Portraits',
-    description: 'Figures caught between worlds, draped in starlight and celestial flora.',
-    artworkIds: ['001', '006'],
-  },
-  {
-    id: 'mythic-studies',
-    name: 'Mythic Studies',
-    description: 'Creatures, relics, and moments drawn from myth and imagination.',
-    artworkIds: ['002'],
-  },
-]
-
-// ─── Commission Services ──────────────────────────────────────────────────────
-
-export const services: ServicePanel[] = [
-  {
-    id: 'sketch-studies',
-    icon: '✦',
-    title: 'Sketch Studies',
-    subtitle: 'Pencil & Ink Foundations',
-    description:
-      'Gestural sketches and refined ink studies — ideal for character concepts, botanical references, and quick exploratory work.',
-    turnaround: '3–5 business days',
-    steps: ['Submit reference & brief', 'Rough sketch approval', 'Final line delivery'],
-  },
-  {
-    id: 'fine-line-art',
-    icon: '◈',
-    title: 'Fine Line Art',
-    subtitle: 'Precision Linework',
-    description:
-      'Intricate, single-weight line illustrations with Art Nouveau detailing. Perfect for prints, tattoo references, and decorative use.',
-    turnaround: '7–10 business days',
-    steps: ['Consultation & mood board', 'Sketch draft', 'Line refinement', 'Final delivery'],
-  },
-  {
-    id: 'full-illustration',
-    icon: '❋',
-    title: 'Full Illustration',
-    subtitle: 'Painted Digital Works',
-    description:
-      'Fully rendered digital paintings with lighting, texture, and colour — from editorial pieces to personal commemorative works.',
-    turnaround: '14–21 business days',
-    steps: ['Brief & reference gathering', 'Rough composition', 'Colour blocking', 'Full render', 'Final revisions'],
-  },
-  {
-    id: 'commercial-projects',
-    icon: '⟡',
-    title: 'Commercial Projects',
-    subtitle: 'Licensed Artwork',
-    description:
-      'Book covers, album art, merchandise, and brand illustration. Licensing terms discussed per project.',
-    turnaround: 'Scope-dependent',
-    steps: ['Project scoping call', 'Contract & licensing', 'Milestone deliveries', 'Final handoff'],
-  },
-  {
-    id: 'branding-direction',
-    icon: '✧',
-    title: 'Branding & Direction',
-    subtitle: 'Visual Identity Systems',
-    description:
-      'Full brand identity packages — wordmarks, icon suites, palettes, and usage guidelines built around your vision.',
-    turnaround: '4–6 weeks',
-    steps: ['Discovery session', 'Concept development', 'Identity system build', 'Brand guide delivery'],
-  },
-]
+];
