@@ -5,7 +5,7 @@ export const artworks = [
   {
     id: 1,
     title: "Red Lily of the Pond",
-    year: "2024",
+    year: "2026",
     medium: "Digital Painting",
     category: "Finished Works",
     collection: "Astral Portraits",
@@ -19,7 +19,7 @@ export const artworks = [
   {
     id: 2,
     title: "Magical Flash Flare",
-    year: "2024",
+    year: "2026",
     medium: "Digital Illustration",
     category: "Finished Works",
     collection: "Mythic Studies",
