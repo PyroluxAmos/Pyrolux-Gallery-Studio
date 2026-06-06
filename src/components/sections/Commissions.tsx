@@ -170,7 +170,7 @@ export default function Commissions({ lightMode }: { lightMode: boolean }) {
               CONTACT
             </div>
             <div className="font-['Cormorant_Garamond'] text-base" style={{ color: text }}>
-              commissions@pyroluxgallery.com
+              phyrostyx@gmail.com
             </div>
             <button
               className="btn-celestial mt-8 w-full"
