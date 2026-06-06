@@ -460,84 +460,88 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
           >
             <div className="flex flex-col md:flex-row">
               {/* Left: zoomable image viewer */}
-              <div
-                className="relative md:w-1/2 flex-shrink-0 flex flex-col md:sticky md:top-0 h-[60vh] md:h-full"
-              >
-                {isImageUrl(modalArt.images[modalImageIndex]) ? (
-                  <ZoomableImage
-                    src={getSrc(modalArt.images[modalImageIndex])}
-                    alt={`${modalArt.title} — Part ${modalImageIndex + 1}`}
-                    gold={gold}
-                  />
-                ) : (
-                  <div
-                    className="flex-1 flex items-center justify-center"
-                    style={{ background: modalArt.images[modalImageIndex], minHeight: 300 }}
-                  >
-                    <div className="opacity-20 text-8xl" style={{ color: modalArt.accent }}>
-                      ✦
+              {/* FIX: h-[60vh] prevents mobile overlap, md:sticky keeps desktop layout intact */}
+              <div className="relative md:w-1/2 flex-shrink-0 flex flex-col md:sticky md:top-0 h-[60vh] md:h-full">
+                
+                {/* Main Image Area */}
+                <div className="flex-1 relative">
+                  {isImageUrl(modalArt.images[modalImageIndex]) ? (
+                    <ZoomableImage
+                      src={getSrc(modalArt.images[modalImageIndex])}
+                      alt={`${modalArt.title} — Part ${modalImageIndex + 1}`}
+                      gold={gold}
+                    />
+                  ) : (
+                    <div
+                      className="w-full h-full flex items-center justify-center"
+                      style={{ background: modalArt.images[modalImageIndex], minHeight: 300 }}
+                    >
+                      <div className="opacity-20 text-8xl" style={{ color: modalArt.accent }}>
+                        ✦
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Corner ornament */}
+                  <div className="absolute top-0 left-0 pointer-events-none">
+                    <CornerOrnament size={40} color={gold} />
+                  </div>
+                </div>
+
+                {/* Bottom Controls: Normal flow (NO absolute positioning to prevent overlap) */}                {modalArt.images.length > 1 && (
+                  <div className="flex flex-col flex-shrink-0">
+                    {/* Part label safely sits above thumbnails */}
+                    <div
+                      className="text-center font-['Cinzel'] text-[9px] tracking-widest py-2"
+                      style={{ color: gold, opacity: 0.7 }}
+                    >
+                      PART {modalImageIndex + 1} OF {modalArt.images.length}
+                    </div>
+
+                    {/* Thumbnail strip */}
+                    <div
+                      className="flex gap-3 p-4 overflow-x-auto snap-x snap-mandatory"
+                      style={{
+                        background: lightMode ? "rgba(200,168,75,0.08)" : "rgba(5,8,22,0.9)",
+                        borderTop: `1px solid ${gold}33`,
+                        minHeight: 100,
+                      }}
+                    >
+                      {modalArt.images.map((img, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setModalImageIndex(idx)}
+                          className="flex-shrink-0 relative overflow-hidden transition-all duration-200 snap-center rounded-sm hover:scale-105 hover:brightness-110"
+                          style={{
+                            width: 64,
+                            height: 80,
+                            background: isImageUrl(img) ? "#050816" : img,
+                            border: `2px solid ${idx === modalImageIndex ? gold : `${gold}33`}`,
+                            cursor: "pointer",
+                            padding: 0,
+                            boxShadow: idx === modalImageIndex ? `0 0 12px ${gold}44` : "none",
+                          }}
+                        >
+                          {isImageUrl(img) && (
+                            <img
+                              src={getSrc(img)}
+                              alt={`Part ${idx + 1}`}
+                              className="absolute inset-0 w-full h-full"
+                              style={{ objectFit: "contain", objectPosition: "center" }}
+                            />
+                          )}
+                          {!isImageUrl(img) && (
+                            <div
+                              className="absolute inset-0 flex items-center justify-center font-['Cinzel'] text-[10px]"
+                              style={{ color: gold, opacity: 0.7 }}
+                            >
+                              {idx + 1}
+                            </div>
+                          )}                        </button>
+                      ))}
                     </div>
                   </div>
                 )}
-
-                {/* Corner ornament */}
-                <div style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}>
-                  <CornerOrnament size={40} color={gold} />
-                </div>
-
-                {/* Part label */}
-                {modalArt.images.length > 1 && (
-                  <div
-                    className="absolute bottom-3 left-0 right-0 text-center font-['Cinzel'] text-[9px] tracking-widest pointer-events-none"                    style={{ color: gold, opacity: 0.7 }}
-                  >
-                    PART {modalImageIndex + 1} OF {modalArt.images.length}
-                  </div>
-                )}
-
-                {/* Thumbnail strip - ENHANCED FOR VISIBILITY AND TOUCH */}
-                {modalArt.images.length > 1 && (
-                  <div
-                    className="flex gap-3 p-4 overflow-x-auto snap-x snap-mandatory"
-                    style={{
-                      background: lightMode ? "rgba(200,168,75,0.08)" : "rgba(5,8,22,0.9)",
-                      borderTop: `1px solid ${gold}33`,
-                      minHeight: 100, // Prevents squishing
-                    }}
-                  >
-                    {modalArt.images.map((img, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setModalImageIndex(idx)}
-                        className="flex-shrink-0 relative overflow-hidden transition-all duration-200 snap-center rounded-sm hover:scale-105 hover:brightness-110"
-                        style={{
-                          width: 64, // Increased from 52 for better touch target
-                          height: 80, // Increased from 68 for better touch target
-                          background: isImageUrl(img) ? "#050816" : img,
-                          border: `2px solid ${idx === modalImageIndex ? gold : `${gold}33`}`,
-                          cursor: "pointer",
-                          padding: 0,
-                          boxShadow: idx === modalImageIndex ? `0 0 12px ${gold}44` : "none",
-                        }}
-                      >
-                        {isImageUrl(img) && (
-                          <img
-                            src={getSrc(img)}
-                            alt={`Part ${idx + 1}`}
-                            className="absolute inset-0 w-full h-full"
-                            style={{ objectFit: "contain", objectPosition: "center" }}
-                          />
-                        )}
-                        {!isImageUrl(img) && (
-                          <div
-                            className="absolute inset-0 flex items-center justify-center font-['Cinzel'] text-[10px]"
-                            style={{ color: gold, opacity: 0.7 }}
-                          >
-                            {idx + 1}
-                          </div>
-                        )}
-                      </button>
-                    ))}
-                  </div>                )}
               </div>
 
               {/* Right: info panel */}
@@ -582,11 +586,11 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                         style={{ color: gold }}
                       >
                         {modalArt.categories.length > 1 ? "CATEGORIES" : "CATEGORY"}
-                      </div>
-                      <div className="flex flex-wrap gap-1">
+                      </div>                      <div className="flex flex-wrap gap-1">
                         {modalArt.categories.map((cat) => (
                           <span
-                            key={cat}                            className="font-['Cinzel'] text-[9px] tracking-widest uppercase px-2 py-1"
+                            key={cat}
+                            className="font-['Cinzel'] text-[9px] tracking-widest uppercase px-2 py-1"
                             style={{ border: `1px solid ${gold}44`, color: gold }}
                           >
                             {cat}
@@ -632,10 +636,10 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                     </div>
                   </div>
                 </div>
-
                 <button
                   className="btn-celestial mt-8 w-full md:w-auto"
-                  style={{ borderColor: gold, color: gold }}                  onClick={() => setModalArt(null)}
+                  style={{ borderColor: gold, color: gold }}
+                  onClick={() => setModalArt(null)}
                 >
                   ← Return to Gallery
                 </button>
