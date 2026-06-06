@@ -482,7 +482,7 @@ export default function Studies({ lightMode }: { lightMode: boolean }) {
                   {/* Corner ornament */}
                   <div className="absolute top-0 left-0 pointer-events-none">
                     <CornerOrnament size={40} color={gold} />
-                  </div6>
+                  </div>
                 </div>
 
                 {/* Bottom Controls: Normal flow (NO absolute positioning to prevent overlap) */}
