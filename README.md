@@ -54,7 +54,7 @@ At the top of gallery.ts import the artwork:
 
 Then reference it in an array:
 
-Images: (`url'${Artwork Name}')`,
+Images: [`url('${Artwork Name}')`],
 ```
 
 Set `background-size: cover` on the artwork card div in `Studies.tsx` if needed.
