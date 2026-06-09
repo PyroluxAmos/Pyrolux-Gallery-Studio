@@ -46,14 +46,15 @@ Then open http://localhost:5173
 
 ## Adding Your Artwork
 
-Replace the placeholder gradient strings in `src/data/gallery.ts`:
+Upload the artwork in the ../src/assets/ folder and reference it to gallery.ts
 
 ```ts
-// Before (placeholder)
-placeholder: "linear-gradient(135deg, #0a0f2e 0%, #1a2a4a 100%)",
+At the top of gallery.ts import the artwork:
+"import [Artwork Name] from "../assets/your-artwork.png"
 
-// After (your image)
-placeholder: "url('/src/assets/your-artwork.jpg')",
+Then reference it in an array:
+
+Images: (`url'${Artwork Name}')`,
 ```
 
 Set `background-size: cover` on the artwork card div in `Studies.tsx` if needed.
