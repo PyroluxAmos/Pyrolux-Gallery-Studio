@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './styles/global.css'
 import App from './App'
 
-// --- NEW CODE START ---
+// --- NEW CODE START --
 // 1. Import the SVG so Vite processes and hashes it
 import favicon from './assets/favicon.svg'
 
