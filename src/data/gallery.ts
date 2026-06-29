@@ -1,4 +1,3 @@
-import redLily from "../assets/red_lily_of_the_pond.png";
 import magicalFlare from "../assets/MagicalFlashFlare.png";
 import FrontFinal from "../assets/FrontFinal.png";
 import BackFinal from "../assets/BackFinal.png";
@@ -19,7 +18,7 @@ export const artworks = [
     collections: ["Finished Artworks"],
     description: "A figure at rest among spider lilies — the higanbana blooming in crimson mist, symbols of parting and return rendered in deep, swirling reds.",
     dimensions: "600 × 750 px",
-    images: [`url('${redLily}')`],
+    images: [`url('https://res.cloudinary.com/dnucxqexu/image/upload/f_auto,q_auto/1000479655_bf5lxy')`],
     accent: "#C0392B",
     number: "001",
   },
